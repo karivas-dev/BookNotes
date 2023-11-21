@@ -23,40 +23,6 @@ const userLoginAttempt = (formikErrors) => {
     });
 }
 
-const googleInfoAttempt = async (token) => (await axios.get("https://www.googleapis.com/oauth2/v3/userinfo", {headers: {Authorization: `Bearer ${token}`,}})).data;
-const userLoginWithGoogleAttempt = (setError, loginWithGoogleSub) => {
-    return useMutation({
-        mutationFn: googleInfoAttempt,
-
-        onError: (error) => {
-            setError('Google account data could not be retrieved');
-        },
-        onSuccess: async (data) => {
-            try {
-                console.log(`SUB: ${data.sub}`);
-                await loginWithGoogleSub.mutateAsync(data.sub);
-            } catch (error) {
-                setError(error.response.data.message);
-                console.log(error.response.data.message);
-            }
-        }
-    });
-}
-
-const googleSubLoginAttempt = (sub) => axiosRoute.post('login.google', null, {google_sub: sub});
-const userLoginWithGoogleSubAttempt = () => {
-    const navigation = useNavigation();
-    return useMutation({
-        mutationFn: googleSubLoginAttempt,
-
-        onSuccess: async (data) => {
-            await saveLoginData(data.data);
-            await axiosRoute.refreshToken();
-            navigation.navigate('Home', {screen: 'HomePage'});
-        }
-    });
-}
-
 
 const logoutAttempt = () => axiosRoute.post('logout');
 
@@ -83,4 +49,4 @@ const userLogoutAttempt = () => {
     });
 }
 
-export {userLoginAttempt, userLogoutAttempt, userLoginWithGoogleAttempt, userLoginWithGoogleSubAttempt};
+export {userLoginAttempt, userLogoutAttempt};

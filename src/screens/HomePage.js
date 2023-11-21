@@ -18,14 +18,8 @@ import {useQueryClient} from "react-query";
 export const HomePage = () => {
     const navigation = useNavigation();
     const tok = async() => {
-        
         const token = await getAuthToken();
-        const type = await getAuthType();
-        const isAdmin = await getAuthIsAdmin();
-        console.log(isAdmin); 
-        console.log(type); 
         console.log(token);
-
     }
     console.log(tok());
     const userLogOut = userLogoutAttempt();

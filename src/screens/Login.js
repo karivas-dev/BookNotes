@@ -1,27 +1,22 @@
 import {ActivityIndicator, Image, Pressable, Text, View} from 'react-native';
 import {GuestLayout} from '../layouts/GuestLayout';
 import {PrimaryButton} from '../components/PrimaryButton';
-import {userLoginAttempt, userLoginWithGoogleAttempt, userLoginWithGoogleSubAttempt} from '../hooks/AuthApi';
+import {userLoginAttempt} from '../hooks/AuthApi';
 import {useFormik} from "formik";
 import * as Yup from 'yup';
 import {FormikInput} from "../components/FormikInput";
 import {useEffect, useState} from "react";
 
 import * as WebBrowser from 'expo-web-browser';
-import * as Google from 'expo-auth-session/providers/google';
 import {Messages} from "../components/Messages";
 import {useNavigation} from "@react-navigation/native";
-import {getAuthIsAdmin, getAuthToken, getAuthType} from "../context/AuthContext";
+import { getAuthToken } from "../context/AuthContext";
 import {user} from "../context/UserAttributesContext";
 
 WebBrowser.maybeCompleteAuthSession();
 
 export const Login = () => {
-    const [googleLoginMessage, setGoogleLoginMessage] = useState(null);
     const navigation = useNavigation();
-    const [request, response, promptAsync] = Google.useAuthRequest({
-        clientId: process.env.EXPO_PUBLIC_GOOGLE_ANDROID_ID
-    });
 
     useEffect(() => {
         const checkLoginStatus = async () => {
@@ -29,8 +24,6 @@ export const Login = () => {
                 const token = await getAuthToken();
                 // Si existe un token, el usuario ya ha iniciado sesión, navega al flujo principal
                 if (token) {
-                    user.isAdmin = await getAuthIsAdmin();
-                    user.type = await getAuthType();
                     navigation.navigate('Home', {screen: 'HomePage'});
                 }
             } catch (error) {
@@ -39,12 +32,6 @@ export const Login = () => {
         }
         checkLoginStatus();
     }, []);
-
-    useEffect(() => {
-        if (response?.type === 'success') {
-            loginGoogleAttempt.mutateAsync(response.authentication.accessToken);
-        }
-    }, [response]);
 
     const formik = useFormik({
         initialValues: {
@@ -58,8 +45,6 @@ export const Login = () => {
         onSubmit: async (user) => await loginAttempt.mutateAsync(user)
     });
     const loginAttempt = userLoginAttempt(formik.setErrors);
-    const loginWithGoogleSubAttempt = userLoginWithGoogleSubAttempt();
-    const loginGoogleAttempt = userLoginWithGoogleAttempt(setGoogleLoginMessage, loginWithGoogleSubAttempt);
 
     return (
         <GuestLayout>
@@ -88,12 +73,7 @@ export const Login = () => {
 
             <View className="flex flex-row justify-between mt-5">
                 <PrimaryButton onPress={formik.handleSubmit} message='Log In'/>
-                <PrimaryButton onPress={() => promptAsync()} message='Google Log In'/>
             </View>
-
-            {googleLoginMessage == null ? null : (
-                <Messages level="error" message={googleLoginMessage}/>
-            )}
 
             {formik.isSubmitting ? (
                 <ActivityIndicator size="large" style={{marginVertical: 16}} color="white"/>

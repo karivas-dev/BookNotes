@@ -3,27 +3,27 @@ import { useState } from "react";
 import { useQuery, useMutation , useQueryClient } from "react-query";
 import { useNavigation } from "@react-navigation/native";
 
-const fetchStores  = async (page) => (await axiosRoute.get('stores.index', { page: page})).data;
+const fetchBooks  = async (page) => (await axiosRoute.get('books.index', { page: page})).data;
 
-const getStores = (page) => {
-    const [stores,setStores] = useState([]);
+const getBooks = (page) => {
+    const [books,setBooks] = useState([]);
     const { data, isLoading, isError, isFetching, error } = useQuery({
-        queryKey: ['stores',page],
-        queryFn: () => fetchStores(page), 
+        queryKey: ['books',page],
+        queryFn: () => fetchBooks(page),
         onError: (error) => {
             console.log(error);
         },
         onSuccess:(data) => {
             if(data?.meta?.current_page === 1){
-                setStores(data?.data);
+                setBooks(data?.data);
             }else{
-                setStores([...stores, ...data?.data]);
+                setBooks([...books, ...data?.data]);
             }
         },
         refetchOnWindowFocus:false
     });
     
-    return {data, isLoading, isError, isFetching, error , stores}
+    return {data, isLoading, isError, isFetching, error , stores: books}
 }
 
 const fetchOneStore = async (id) => (await axiosRoute.get('stores.show', {store: id})).data;
@@ -45,7 +45,7 @@ const getStore = (id) => {
 }
 
 
-const storeStoreXd = (store) => (axiosRoute.post('stores.store', null, store));
+const storeBook = (store) => (axiosRoute.post('books.store', null, book));
 
 const updateStore = (store) => (axiosRoute.put('stores.update', store.id, store));
 
@@ -55,7 +55,7 @@ const createEditStore = (formikErrors,store) => {
     const navigation = useNavigation();
 
     const createEditStoreMutation = useMutation({
-        mutationFn: (store.id == '' ?  storeStoreXd : updateStore),
+        mutationFn: (store.id == '' ?  storeBook : updateStore),
         
         onError: (error) => {
             const erno = error.response.data.errors != null ? error.response.data.errors : {'name': error.response.data.message};
