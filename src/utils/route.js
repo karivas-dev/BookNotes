@@ -18,7 +18,6 @@ class axios_routed {
     async boot() {
         const response = await axios.get(`${process.env.EXPO_PUBLIC_API_URL}/api/ziggy`);
         ZiggyData = await response.data;
-        console.log('Ziggy Routes obtained');
     }
 
     async refreshToken() {

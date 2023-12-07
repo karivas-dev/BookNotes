@@ -1,37 +1,31 @@
 import React from "react";
-
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
-
-import { AntDesign } from '@expo/vector-icons';
-import { FontAwesome5 } from '@expo/vector-icons';
-import { MaterialIcons } from '@expo/vector-icons';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { Login } from "../screens/Login";
 import { HomePage } from "../screens/HomePage";
 
-//import {CreateEditOwner} from "../screens/Owners/CreateEditOwner";
-//import {DetailOwner} from '../screens/Owners/DetailOwner';
-import { BooksList } from "../screens/BooksList";
+import { BooksList } from "../screens/books/BooksList";
 
-import { Login } from "../screens/Login";
-import { ResetPassword } from "../screens/ResetPassword";
+import { CreateCategory } from "../screens/categories/CreateCategory";
+import { CategoriesList } from '../screens/categories/CategoriesList';
 
-import { user } from "../context/UserAttributesContext";
-import {useNavigation} from "@react-navigation/native";
+import { CreateAuthor } from "../screens/authors/CreateAuthor";
+import { AuthorsList } from '../screens/authors/AuthorsList';
 
+import { CreateLibrary } from "../screens/libraries/CreateLibrary";
+import { LibrariesList } from '../screens/libraries/LibrariesList';
+
+import { WishesList } from '../screens/wishes/WishesList';
 
 const Tab = createBottomTabNavigator();
 const screenOptionsTabStyle = {
     headerShown:false,
     tabBarStyle:{
-        backgroundColor:'#374A7A',
+        backgroundColor:'#cbbbaf',
         height:60,
         borderTopWidth: 0,
     }
-}
-const BottomTabItemIcon = (IconLib,size, name, focused) => {
-    return (<IconLib size={24} name={name} color={focused ? '#6987B7': 'white'}/>)
 }
 
 const BottomTabNavigator = () => {
@@ -45,22 +39,34 @@ const BottomTabNavigator = () => {
                 options={{
                     tabBarLabel: '',
                     tabBarIcon: ({focused}) => (
-                        <AntDesign name="home" color={focused ? '#6987B7': 'white'} size={24} />
+                        <MaterialCommunityIcons name="home" color={focused ? '#ff6262': 'white'} size={24} />
                     ),
                 }}
             />
+
             <Tab.Screen
-                name="BooksList"
-                component={BooksList}
+                name="Library"
+                component={LibrariesList}
                 options={{
                     tabBarLabel: '',
                     tabBarIcon: ({focused}) => (
-                        <MaterialIcons  name="format-list-bulleted"  size={24} color={focused ? '#6987B7': 'white'} />
+                        <MaterialCommunityIcons name="bookshelf" color={focused ? '#ff6262': 'white'} size={24} />
+                    ),
+                }}
+                initialParams={{level: '', flashMessage: '',page: 1}}
+            />  
+
+            <Tab.Screen
+                name="WishesList"
+                component={WishesList} 
+                options={{
+                    tabBarLabel: '',
+                    tabBarIcon: ({focused}) => (
+                        <MaterialCommunityIcons  name="heart"  size={24} color={focused ? '#ff6262': 'white'} />
                     ),
                 }}
                 initialParams={{level: '', flashMessage: '',page: 1}}
             />
-            
         </Tab.Navigator>
     )
 }
@@ -75,21 +81,14 @@ export const StackNavigator = () => {
         <Stack.Navigator screenOptions={screenOptionsStyle}>
             <Stack.Screen name="Login" component={Login} />
             <Stack.Screen name="Home" component={BottomTabNavigator} />
-            <Stack.Screen name="ResetPassword" component={ResetPassword} />
-            {/*
-
-            <Stack.Screen name="BranchDetail" component={BranchDetail}/>
-
-            <Stack.Screen name="CreateEditOwner" component={CreateEditOwner} />
-            <Stack.Screen name="DetailOwner" component={DetailOwner} />
-            <Stack.Screen name="BrandsList" component={BrandsList} initialParams={{level: '', flashMessage: ''}}/>
-            <Stack.Screen name="DetailBrand" component={DetailBrand} initialParams={{level: '', flashMessage: '', page: 1}}/>
-            <Stack.Screen name="CreateEditBrand" component={CreateEditBrand} />
-            */
-            }
+            
+            <Stack.Screen name="CategoriesList" component={CategoriesList} initialParams={{level: '', flashMessage: ''}}/>
+            <Stack.Screen name="AuthorsList" component={AuthorsList} initialParams={{level: '', flashMessage: ''}}/>
+            <Stack.Screen name="LibrariesList" component={LibrariesList} initialParams={{level: '', flashMessage: ''}}/>
+                     
+            <Stack.Screen name="CreateLibrary" component={CreateLibrary} initialParams={{ id: "", name: "" }}/>
+            <Stack.Screen name="CreateCategory" component={CreateCategory} />
+            <Stack.Screen name="CreateAuthor" component={CreateAuthor} />
         </Stack.Navigator>
     )
 };
-
-
-

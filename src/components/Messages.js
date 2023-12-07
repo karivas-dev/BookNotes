@@ -5,25 +5,28 @@ export const Messages = ({level,message}) => {
    
     if(level == 'error'){
         return (
-            <View className="max-w-sm p-6 bg-red-500 rounded-lg mt-2">
+            <View className="max-w-sm p-5 bg-[#d36661] rounded-lg mt-2">
+                <Text className="text-gray-200 font-bold">¡Ups! Hay un error</Text>
                 <Text className="text-gray-200">{message}</Text>
             </View>
         )
     }else if (level == 'success'){
         return (
-            <View className="max-w-sm p-6 bg-emerald-500 rounded-lg mt-2">
+            <View className="max-w-sm p-5 bg-[#6eb071] rounded-lg mt-2">
+                <Text className="text-gray-200 font-bold">Todo marcha ¡bien!</Text>
                 <Text className="text-gray-200">{message}</Text>
             </View>
         )
     }else if (level == 'warning'){
         return (
-            <View className="max-w-sm p-6 bg-orange-500 rounded-lg mt-2">
+            <View className="max-w-sm p-5 bg-orange-500 rounded-lg mt-2">
                <Text className="text-gray-200">{message}</Text>
             </View>
         )
     }else if (level == 'info'){
         return (
-            <View className="max-w-sm p-6 bg-slate-700 rounded-lg mt-2">
+            <View className="max-w-sm p-5 bg-[#8881a8] rounded-lg mt-2">
+                <Text className="text-gray-200 font-bold">Debes saber que...</Text>
                <Text className="text-gray-200">{message}</Text>
             </View>
         )

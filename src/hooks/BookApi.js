@@ -4,135 +4,48 @@ import { useQuery, useMutation , useQueryClient } from "react-query";
 import { useNavigation } from "@react-navigation/native";
 
 const fetchBooks  = async (page) => (await axiosRoute.get('books.index', { page: page})).data;
-
 const getBooks = (page) => {
-    const [books,setBooks] = useState([]);
+    const [ books, setBooks ] = useState([]);
     const { data, isLoading, isError, isFetching, error } = useQuery({
-        queryKey: ['books',page],
+        queryKey: ['books', page],
         queryFn: () => fetchBooks(page),
-        onError: (error) => {
-            console.log(error);
-        },
-        onSuccess:(data) => {
-            if(data?.meta?.current_page === 1){
-                setBooks(data?.data);
-            }else{
-                setBooks([...books, ...data?.data]);
-            }
-        },
+        onError: (error) => {console.log(error);},
+        onSuccess:(data) => {setBooks(data?.data);},
         refetchOnWindowFocus:false
     });
     
-    return {data, isLoading, isError, isFetching, error , stores: books}
+    return {data, isLoading, isError, isFetching, error , books}
 }
 
-const fetchOneStore = async (id) => (await axiosRoute.get('stores.show', {store: id})).data;
-
-const getStore = (id) => {
-    const { data, isLoading, isError, error,isFetching ,isSuccess } = useQuery({
-        queryKey: ['store'], 
-        queryFn: () => fetchOneStore(id), 
-        onSuccess:(data) => {
-            console.log(data.data);
-        },
-        onError : (error) => {
-            console.log(error);
-        },
+const fetchBook = async (id) => (await axiosRoute.get('books.show', {book: id})).data;
+const getBook = (id) => {
+    const { data:book, isLoading, isError, error,isFetching ,isSuccess } = useQuery({
+        queryKey: ['book'], 
+        queryFn: () => fetchBook(id),
         refetchOnWindowFocus:false
-    });
+    }); 
 
-    return { data, isLoading, isError, error, isFetching , isSuccess}
+    return { data:book, isLoading, isError, error, isFetching , isSuccess}
 }
 
+const storeBook = (book) => axiosRoute.post('books.store', null, book);
+const updateBook = (book) => (axiosRoute.put('books.update', book.id, book));
 
-const storeBook = (store) => (axiosRoute.post('books.store', null, book));
-
-const updateStore = (store) => (axiosRoute.put('stores.update', store.id, store));
-
-//store CREATE - UPDATE 
-const createEditStore = (formikErrors,store) => {
-    const queryClient = new useQueryClient();
-    const navigation = useNavigation();
-
-    const createEditStoreMutation = useMutation({
-        mutationFn: (store.id == '' ?  storeBook : updateStore),
-        
-        onError: (error) => {
-            const erno = error.response.data.errors != null ? error.response.data.errors : {'name': error.response.data.message};
-            formikErrors(erno);
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries(['stores']);      
-            navigation.navigate('StoresList',{ level: 'success',  flashMessage: data?.data?.message , page: 1}); 
-        },
-    });
-    return createEditStoreMutation;
-}
-
-//BRANCH SECTION
-const storeBranch = (branch) => (axiosRoute.post('branches.store', null, branch));
-
-const updateBranch = (branch) => (axiosRoute.patch('branches.update', branch.id, branch));
-
-const createEditStoreBranch = (formikErrors,branch) => {
-    const queryClient = new useQueryClient();
-    const navigation = useNavigation();
-    return useMutation({
-        mutationFn: (branch.id == '' ?  storeBranch : updateBranch),
-        
-        onError: (error) => {
-            const erno = error.response.data.errors != null ? error.response.data.errors : {'district_id': error.response.data.message};
-            formikErrors(erno);
-        },
-        onSuccess: (data) => {
-            queryClient.invalidateQueries('store'); 
-            queryClient.invalidateQueries(['branches']); 
-            navigation.navigate('DetailStore',{ level: 'success',  flashMessage: data?.data?.message, id: branch.brancheable_id}); 
-        },
-    });
-}
-const destroyBranch = (branch) => axiosRoute.delete('branches.destroy', branch.id);
-
-const deleteStoreBranch = () => {
+const createEditBook = (formikErrors, book) => {
     const queryClient = new useQueryClient();
     const navigation = useNavigation();
 
     return useMutation({
-        mutationFn: destroyBranch,
-        
+        mutationFn: (book.id == '' ? storeBook : updateBook), 
         onError: (error) => {
-            console.log(error);
+            const erno = error.response.data.errors != null ? error.response.data.errors : {'title': error.response.data.message};
+            formikErrors(erno);
         },
         onSuccess: (data) => {
-            console.log('eliminado');
-            queryClient.invalidateQueries(['store']); 
-            queryClient.invalidateQueries(['branches']); 
-            navigation.navigate('DetailStore',{ level: 'success',  flashMessage: data?.data?.message});  
+            queryClient.invalidateQueries(['books']); 
+            navigation.navigate('HomePage', { level: 'success',  flashMessage: data?.data?.message, page: 1});
         },
     });
 }
-//--------------------------------------------------------------
-const destroyStore = (store) => axiosRoute.delete('stores.destroy', store.id);
 
-const deleteStore = () => {
-
-    const queryClient = new useQueryClient();
-    const navigation = useNavigation();
-
-    const deleteStoreMutation = useMutation({
-        mutationFn: destroyStore,
-        
-        onError: (error) => {
-            console.log(error.response.data.message);
-        },
-        onSuccess: (data) => {
-            console.log('eliminado');
-            queryClient.invalidateQueries(['stores',1]); 
-            navigation.navigate('StoresList',{ level: 'success',  flashMessage: data?.data?.message, page: 1}); 
-            //navigation.navigate('BrandList',{ level: 'success', flashMessage: data?.data?.message }); asi en un futuro
-        },
-    });
-    return deleteStoreMutation;
-}
-
-export {getStores , getStore, createEditStore ,createEditStoreBranch, deleteStoreBranch ,deleteStore};
+export {getBook, getBooks, createEditBook};

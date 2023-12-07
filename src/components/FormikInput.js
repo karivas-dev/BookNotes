@@ -6,12 +6,12 @@ export const FormikInput = ({ placeholder, multiline,rows,passEntry, label = nul
     return (
         <View className="mb-4">
             { label == null ? null :
-                <Text className="text-gray-200 my-2">{ label }</Text>
+                <Text className="text-gray-200">{ label }</Text>
             }
             <TextInput
-                className="w-full h-12 px-4 bg-blueC-500 border-blueC-400 focus:border-grayC-500 focus:ring-grayC-500
-                rounded-lg shadow-sm p-2.5 text-gray-200"
-                placeholderTextColor="#E0E0E0"
+                className="w-full h-12 px-4 bg-[#f2efec] focus:border-[#f2efec] focus:ring-[#f2efec]
+                rounded-lg shadow-sm p-2.5 text-black"
+                placeholderTextColor="#000"
                 placeholder={placeholder}
                 secureTextEntry={passEntry}
                 multiline={multiline}
@@ -19,7 +19,7 @@ export const FormikInput = ({ placeholder, multiline,rows,passEntry, label = nul
                 onChangeText={formik.handleChange(valueName)}
                 value={formik.values[valueName]}
             />
-            <Text className="text-red-500 capitalize-first">
+            <Text className="text-orange-600">
                 { formik.touched?.[valueName] && formik.errors?.[valueName] }
             </Text>
         </View>

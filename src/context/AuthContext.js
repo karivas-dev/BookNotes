@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {user} from "./UserAttributesContext";
 
 export const saveLoginData = async (data) => {
   try {

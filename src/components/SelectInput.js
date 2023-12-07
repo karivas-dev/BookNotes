@@ -1,13 +1,13 @@
 import React from "react";
 import {Picker} from "@react-native-picker/picker";
 
-
 export const SelectInput = ({ data, DefaultPlaceholder,onValueChange,selectedValue ,onBlur}) => {
 
     return (
         <Picker
-            className="w-full h-12 px-4 mb-4 bg-blueC-500 border-transparent focus:border-grayC-500 focus:ring-grayC-500
-           rounded-lg shadow-sm p-2.5 text-gray-200"
+            className="w-full h-12 px-4 mb-4 bg-[#e75963] border-transparent
+             focus:bg-[#e75963] focus:ring-[#e75963]
+           rounded shadow-sm p-2.5 text-gray-200"
            onValueChange={onValueChange}
            selectedValue={selectedValue}
            onBlur={onBlur}
@@ -29,12 +29,6 @@ export const SelectInput = ({ data, DefaultPlaceholder,onValueChange,selectedVal
                     )
                 })
             }
-
-
-            {/* <Picker.Item label="Java" value="java" />
-            <Picker.Item label="JavaScript" value="js" /> */}
         </Picker>
-
     )
-
 }
